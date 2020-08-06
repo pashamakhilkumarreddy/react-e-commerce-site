@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 export default class Default extends Component {
   constructor(props) {
@@ -6,8 +6,8 @@ export default class Default extends Component {
   }
   render() {
     return (
-      <Fragment>
-      </Fragment>
+      <>
+      </>
     )
   }
 }

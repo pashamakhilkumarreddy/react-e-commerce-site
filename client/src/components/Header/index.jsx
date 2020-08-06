@@ -37,19 +37,16 @@ const Header = () => {
           id='main-navbar'
           className={'navbar-menu ' + (showMobileMenu ? 'is-active' : '')}>
           <div className='navbar-start'>
-            <NavLink className='navbar-item' to='/products'>
-              Products
-            </NavLink>
+            <div className="navbar-item">
+              <NavLink className='button is-info is-light' to='/products'>
+                Products
+              </NavLink>
+            </div>
           </div>
           <div className='navbar-end'>
             <div className='navbar-item'>
               <NavLink to='/login' className={`button is-link`}>
                 Log In
-              </NavLink>
-            </div>
-            <div className='navbar-item'>
-              <NavLink to='/register' className={`button is-light`}>
-                Register
               </NavLink>
             </div>
             <div className='navbar-item'>
