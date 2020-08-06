@@ -9,6 +9,10 @@ const rateLimit = require('koa-ratelimit');
 const {
   server,
 } = require('./config');
+const {
+  getDBURI,
+  connectToDB,
+} = require('./utils/dbcon');
 
 const app = new Koa();
 const db = new Map();
@@ -39,6 +43,13 @@ require('./routes')({
   app,
 });
 
-app.listen(PORT, () => {
-  console.info(`The server is up and running on port ${PORT}`);
+getDBURI().then((dbURI) => {
+  connectToDB(dbURI).then(() => {
+    console.info('Connected to the database');
+    app.listen(PORT, () => {
+      console.info(`The server is up and running on port ${PORT}`);
+    });
+  }).catch((err) => {
+    console.error(err);
+  });
 });
