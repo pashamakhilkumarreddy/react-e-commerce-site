@@ -1,6 +1,9 @@
+/*
+  eslint-disable no-invalid-this
+*/
 const mongoose = require('mongoose');
 const {
-  format,
+  toDate,
 } = require('date-fns');
 const {
   hash,
@@ -45,7 +48,7 @@ const UserSchema = new Schema({
     unique: true,
     index: true,
     trim: true,
-    minlength: ['Email is too short!'],
+    minlength: [8, 'Email is too short!'],
     maxlength: [120, 'Email is too long!'],
     validate: {
       validator(val) {
@@ -72,14 +75,17 @@ const UserSchema = new Schema({
   },
   gender: {
     type: String,
-    enum: ['female', 'male'],
+    trim: true,
+    lowercase: true,
+    enum: ['female', 'male', 'null'],
+    default: 'null',
   },
   dob: {
     type: Date,
   },
   doj: {
     type: Date,
-    default: format(Date.now(), 'mm-dd-yyyy'),
+    default: toDate(new Date()),
   },
   isAdmin: {
     type: Boolean,
@@ -112,7 +118,7 @@ const UserSchema = new Schema({
 UserSchema.pre('save', async function hashPassword(next) {
   try {
     if (this.isModified('password') || this.isNew) {
-      const hashedPassword = await hash(this.password.trim(), 12);
+      const hashedPassword = await hash(this.password, 12);
       this.password = hashedPassword;
       return next();
     }
@@ -125,7 +131,7 @@ UserSchema.pre('save', async function hashPassword(next) {
 
 UserSchema.methods.comparePassword = async function comparePassword(password) {
   try {
-    return await compare(this.password, password.trim());
+    return await compare(password, this.password);
   } catch (err) {
     console.error(err);
     throw err;
