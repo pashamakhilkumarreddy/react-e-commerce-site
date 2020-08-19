@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services: 
   api:
@@ -10,27 +10,31 @@ services:
     restart: always
     env_file: .env  
     environment: 
+      - MONGO_HOSTNAME=mongo
+      - MONGO_PORT=$MONGO_PORT
       - MONGO_USERNAME=$MONGO_USERNAME
       - MONGO_PASSWORD=$MONGO_PASSWORD
-      - MONGO_HOSTNAME=localhost
-      - MONGO_PORT=$MONGO_PORT
-      - MONGO_DB=$MONGO_DB
+      - MONGO_DBNAME=$MONGO_DBNAME
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - REDIS_PASSWORD=$REDIS_PASSWORD
     ports: 
-      - '80:5000'
+      - '8000:5000'
     networks: 
       - app-network
     volumes: 
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
+      - ${PWD}:/home/node/app
+      - ${PWD}/node_modules:/home/node/app/node_modules
     links: 
       - mongo
+      - redis
     depends_on: 
       - mongo
     command: npm run prod
   mongo:
     image: mongo
     container_name: mongo
-    restart: unless-stopped
+    restart: always
     env_file: .env
     environment: 
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
@@ -40,7 +44,21 @@ services:
     networks: 
       - app-network
     volumes: 
-      - ./dbdata:/data/db
+      - ${PWD}/dbdata:/data/db
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    env_file: .env
+    environment: 
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+    ports: 
+      - '6379:6379'
+    networks:
+      - 'app-network'
+    volumes: 
+      - ${PWD}/redis-data:/var/lib/redis
     
 networks: 
   app-network:
@@ -49,3 +67,4 @@ networks:
 volumes: 
   dbdata:
   node_modules: 
+  redis_data:
