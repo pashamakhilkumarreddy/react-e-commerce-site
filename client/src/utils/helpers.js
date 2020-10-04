@@ -1,9 +1,9 @@
 const checkObjProps = (obj = {}) => {
-  const keys = Object.keys(obj);
-  if (!keys.length) {
+  const values = Object.values(obj);
+  if (!values.length) {
     return;
   }
-  return keys.every((key) => key);
+  return values.every(value => value);
 } 
 
 export {

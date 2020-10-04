@@ -3,11 +3,8 @@ import Title from './Title';
 import Product from './Product';
 
 export default class ProductList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      products: []
-    }
+  state = {
+    products: []
   }
   render() {
     return (

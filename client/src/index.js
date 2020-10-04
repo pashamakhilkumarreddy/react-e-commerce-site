@@ -1,16 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import {Provider} from 'react-redux';
+// import { BrowserRouter as Router } from 'react-router-dom';
+import {ConnectedRouter} from 'connected-react-router';
+import {PersistGate} from 'redux-persist/integration/react';
 import App from './App';
+import store from './store';
+import history from './store/History';
 import * as serviceWorker from './serviceWorker';
+
 import '../node_modules/bulma/css/bulma.min.css';
 import './index.scss';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <Provider store={store.Store}>
+      <PersistGate loading={null} persistor={store.persistor}>
+        <ConnectedRouter history={history}>
+          <App />
+        </ConnectedRouter>
+      </PersistGate>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

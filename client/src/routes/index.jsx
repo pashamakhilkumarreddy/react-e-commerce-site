@@ -6,19 +6,24 @@ import Details from '../components/Details';
 import Cart from '../components/Cart';
 import Default from '../components/Default';
 
+import ErrorBoundary from '../components/Errors/ErrorBoundary';
+
 const Home = lazy(() => import('../pages/Home'));
 const Login = lazy(() => import('../pages/auth/Login'));
 const Register = lazy(() => import('../pages/auth/Register'));
 
-export default () =>
+export default () => (
   <Suspense fallback={<Loader />}>
     <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/register" component={Register} />
-      <Route exact path="/products" component={ProductList} />
-      <Route exact path="/details"component={Details} />
-      <Route exact path="/cart" component={Cart} />
-      <Route component={Default} />
+      <ErrorBoundary>
+        <Route exact path='/' component={Home} />
+        <Route exact path='/login' component={Login} />
+        <Route exact path='/register' component={Register} />
+        <Route exact path='/products' component={ProductList} />
+        <Route exact path='/details' component={Details} />
+        <Route exact path='/cart' component={Cart} />
+        <Route component={Default} />
+      </ErrorBoundary>
     </Switch>
   </Suspense>
+);

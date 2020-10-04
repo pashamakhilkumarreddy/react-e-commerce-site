@@ -1,16 +1,33 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import {bindActionCreators} from 'redux';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import { NavLink, withRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import FormLayout from '../../../layouts/FormLayout';
 import { checkObjProps } from '../../../utils/helpers';
-import Api from '../../../services/AuthenticationService';
+import { register } from '../../../store/actions/Authentication';
 
-class Login extends Component {
+class Register extends Component {
   state = {
     email: '',
     password: '',
-    rememberme: true,
+    termsAndConditions: false,
     isLoading: false,
+  };
+
+  static propTypes = {};
+
+  componentDidMount = () => {
+    if (this.props.auth?.authenticated) {
+      this.props.history.push('/login');
+    }
+  };
+
+  componentDidUpdate = () => {
+    if (this.props.auth?.authenticated) {
+      this.props.history.push('/login');
+    }
   };
 
   handleOnChange = (e) => {
@@ -31,27 +48,27 @@ class Login extends Component {
         password,
         termsAndConditions,
       };
-      if (checkObjProps(payload)) {
-        const result = await Api.register({
+      // if (checkObjProps(payload)) {
+        this.props.register({
           email,
           password,
         });
-        console.log(result);
-      }
+      // }
     } catch (err) {
       console.error(err);
     }
   };
+
   render() {
     const { email, password, termsAndConditions } = this.state;
     return (
       <>
         <Helmet>
-          <title>Login</title>
+          <title>Register</title>
         </Helmet>
         <FormLayout>
           <form className='form' noValidate onSubmit={this.handleOnSubmit}>
-            <h2 className="title has-text-centered">Register</h2>
+            <h2 className='title has-text-centered'>Register</h2>
             <div className='field'>
               <label htmlFor='register-email' className='label'>
                 Email
@@ -65,6 +82,7 @@ class Login extends Component {
                   placeholder='username@domain.com'
                   value={email}
                   onChange={this.handleOnChange}
+                  autoComplete='off'
                   required
                 />
               </div>
@@ -82,6 +100,7 @@ class Login extends Component {
                   placeholder='Please enter your password'
                   value={password}
                   onChange={this.handleOnChange}
+                  autoComplete='off'
                   required
                 />
               </div>
@@ -90,10 +109,11 @@ class Login extends Component {
               <div className='control'>
                 <label
                   htmlFor='termsAndConditions'
-                  className='checkbox is-flex align-center'>
+                  className='checkbox is-flex align-center'
+                >
                   <input
                     type='checkbox'
-                    id='termsAndConditions '
+                    id='termsAndConditions'
                     value={termsAndConditions}
                   />
                   &nbsp; I agree to all the terms and conditions
@@ -117,4 +137,23 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  const {
+    authentication
+  } = state;
+  const auth = {
+    ...authentication,
+  };
+  return {
+    auth
+  };
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  register,
+}, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(Register));
